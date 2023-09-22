@@ -1,4 +1,4 @@
-import { AuthOptions, DefaultSession } from 'next-auth';
+import { AuthOptions, DefaultSession, getServerSession } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import { KyselyAdapter } from '@/lib/kysely-adapter';
 
@@ -24,4 +24,8 @@ export const authOptions: AuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
     })
   ]
+};
+
+export const getSession = () => {
+  return getServerSession(authOptions);
 };
