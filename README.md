@@ -1,3 +1,3 @@
-# saturn
+# saturn 🪐
 
 project management tool.

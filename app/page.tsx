@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 
-const Home = () => {
+const Home = async () => {
   return (
     <div className="p-6">
       <Button>Get Started.</Button>

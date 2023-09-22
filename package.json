@@ -3,12 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "concurrently --kill-others \"next dev\" \"prisma studio --browser none\"",
+    "build": "prisma generate & next build",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
-    "postinstall": "prisma generate",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -21,9 +20,12 @@
     "clsx": "^2.0.0",
     "eslint": "8.49.0",
     "eslint-config-next": "13.5.2",
+    "kysely": "^0.26.3",
     "lucide-react": "^0.279.0",
     "next": "13.5.2",
+    "pg": "^8.11.3",
     "postcss": "8.4.30",
+    "prisma-kysely": "^1.7.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "tailwind-merge": "^1.14.0",
@@ -34,12 +36,15 @@
   "devDependencies": {
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",
+    "@types/pg": "^8.10.2",
     "@typescript-eslint/eslint-plugin": "^6.7.2",
     "@typescript-eslint/parser": "^6.7.2",
+    "concurrently": "^8.2.1",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-prettier": "^5.0.0",
     "husky": "^8.0.3",
-    "prettier": "^3.0.3"
+    "prettier": "^3.0.3",
+    "prisma": "^5.3.1"
   }
 }

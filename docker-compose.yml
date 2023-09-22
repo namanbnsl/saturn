@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  saturn-db:
+    image: postgres
+    restart: always
+    container_name: saturn-postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+
+volumes:
+  postgres:
