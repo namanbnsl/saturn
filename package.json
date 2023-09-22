@@ -46,5 +46,10 @@
     "husky": "^8.0.3",
     "prettier": "^3.0.3",
     "prisma": "^5.3.1"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "pnpm lint && pnpm commitlint --edit"
+  }
   }
 }
