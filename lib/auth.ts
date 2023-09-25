@@ -6,6 +6,7 @@ import { KyselyAdapter } from '@/lib/kysely-adapter';
 import { sendEmail } from '@/lib/send-email';
 import LoginLink from '@/emails/LoginLink';
 import { db } from '@/lib/db';
+import { nanoid } from '@/lib/utils';
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -53,7 +54,46 @@ export const authOptions: AuthOptions = {
         }
       }
     })
-  ]
+  ],
+  callbacks: {
+    async signIn({ profile }) {
+      if (!profile?.email) {
+        throw new Error('No profile');
+      }
+
+      const user = await db
+        .selectFrom('user')
+        .selectAll()
+        .where('email', '=', profile.email)
+        .execute();
+
+      if (user.length > 0) {
+        await db
+          .updateTable('user')
+          .set({
+            // We had to do this because github gives image as avatar_url in props
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            image: profile.image ? profile.image : profile?.avatar_url,
+            name: profile.name
+          })
+          .where('id', '=', user[0].id)
+          .execute();
+      } else {
+        await db
+          .insertInto('user')
+          .values({
+            id: nanoid(),
+            email: profile.email,
+            image: profile.image,
+            name: profile.name
+          })
+          .execute();
+      }
+
+      return true;
+    }
+  }
 };
 
 export const getSession = () => {

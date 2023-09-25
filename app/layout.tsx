@@ -9,7 +9,7 @@ const font = Bricolage_Grotesque({
 });
 
 export const metadata: Metadata = {
-  title: 'saturn 🪐',
+  title: '🪐',
   description: 'project management tool'
 };
 
