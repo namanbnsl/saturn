@@ -1,4 +1,4 @@
-import { getSession } from 'next-auth/react';
+import { getSession } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 
 type Props = {
