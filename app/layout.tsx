@@ -1,9 +1,12 @@
 import MainProvider from '@/components/providers/MainProvider';
 import './globals.css';
 import type { Metadata } from 'next';
-import { Poppins } from 'next/font/google';
+import { Bricolage_Grotesque } from 'next/font/google';
+import { ThemeProvider } from '@/components/providers/ThemeProvider';
 
-const font = Poppins({ subsets: ['latin'], weight: ['300', '400', '600'] });
+const font = Bricolage_Grotesque({
+  subsets: ['latin']
+});
 
 export const metadata: Metadata = {
   title: 'saturn 🪐',
@@ -18,7 +21,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={font.className}>
-        <MainProvider>{children}</MainProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem={false}
+          storageKey="saturn-theme"
+        >
+          <MainProvider>{children}</MainProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

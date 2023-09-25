@@ -34,7 +34,7 @@ const ProviderSignIn = () => {
       <Button
         type="button"
         className="w-1/5"
-        variant={'default'}
+        variant={'outline'}
         disabled={githubLoading}
         onClick={() => {
           setGithubLoading(true);

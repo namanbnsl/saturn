@@ -115,6 +115,7 @@ const SignInPage = () => {
             <Button
               disabled={emailLoading}
               className="mt-2 w-1/5"
+              variant={'outline'}
               type="submit"
             >
               {emailLoading && (
