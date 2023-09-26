@@ -1,8 +1,29 @@
+import {
+  Project,
+  ProjectsDataTable
+} from '@/components/projects/AllProjectsTable';
 import { Button } from '@/components/ui/button';
+import { getSession } from '@/lib/auth';
+import { db } from '@/lib/db';
 import { PlusCircleIcon } from 'lucide-react';
 import Link from 'next/link';
 
-const DashboardPage = () => {
+const DashboardPage = async () => {
+  const session = await getSession();
+
+  async function getData(): Promise<Project[]> {
+    const data = await db
+      .selectFrom('project')
+      .select(['name', 'priority'])
+      .selectAll()
+      .where('userEmail', '=', session?.user.email as string)
+      .execute();
+
+    return data;
+  }
+
+  const data = await getData();
+
   return (
     <>
       <main className="container space-y-10 mt-20">
@@ -19,6 +40,8 @@ const DashboardPage = () => {
             </Button>
           </Link>
         </div>
+
+        <ProjectsDataTable data={data} />
       </main>
     </>
   );

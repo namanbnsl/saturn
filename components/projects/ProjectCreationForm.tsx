@@ -64,6 +64,7 @@ const ProjectCreationForm = ({ email }: Props) => {
 
       if (res.data.msg === 'success') {
         router.push('/dashboard');
+        router.refresh();
 
         return toast({
           title: 'Project created.',
