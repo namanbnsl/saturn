@@ -4,6 +4,8 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   : ColumnType<T, T | undefined, T>;
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
+import type { ProjectPriority } from './enums';
+
 export type Account = {
   id: string;
   userId: string;
@@ -18,13 +20,18 @@ export type Account = {
   id_token: string | null;
   session_state: string | null;
 };
+export type Project = {
+  id: string;
+  name: string;
+  priority: Generated<ProjectPriority>;
+  userId: string;
+};
 export type Session = {
   id: string;
   sessionToken: string;
   userId: string;
   expires: Timestamp;
 };
-
 export type User = {
   id: string;
   name: string | null;
@@ -37,9 +44,9 @@ export type VerificationToken = {
   token: string;
   expires: Timestamp;
 };
-
 export type DB = {
   account: Account;
+  project: Project;
   session: Session;
   user: User;
   verificationToken: VerificationToken;

@@ -101,7 +101,7 @@ const SignInPage = () => {
                     <Input
                       autoCapitalize="none"
                       type="email"
-                      className="focus:border-blue-500 border-2"
+                      className="focus:border-blue-500 border-[2.5px] transition-all duration-200"
                       autoComplete="off"
                       autoCorrect="off"
                       placeholder="abc@gmail.com"

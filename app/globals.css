@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+::-moz-selection {
+  @apply bg-blue-300 text-gray-800;
+}
+
+::selection {
+  @apply bg-blue-300 text-gray-800;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
