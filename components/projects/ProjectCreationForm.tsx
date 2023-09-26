@@ -28,7 +28,11 @@ const creationFormSchema = z.object({
   priority: z.string({ required_error: 'Please select a priority.' })
 });
 
-const ProjectCreationForm = () => {
+type Props = {
+  userId: string;
+};
+
+const ProjectCreationForm = ({ userId }: Props) => {
   const form = useForm<z.infer<typeof creationFormSchema>>({
     resolver: zodResolver(creationFormSchema),
     defaultValues: {

@@ -1,6 +1,9 @@
 import ProjectCreationForm from '@/components/projects/ProjectCreationForm';
+import { getSession } from '@/lib/auth';
 
-const NewProjectPage = () => {
+const NewProjectPage = async () => {
+  const session = await getSession();
+
   return (
     <>
       <main className="container space-y-10 mt-20">
@@ -11,7 +14,7 @@ const NewProjectPage = () => {
           </div>
         </div>
 
-        <ProjectCreationForm />
+        <ProjectCreationForm userId={session?.user.id as string} />
       </main>
     </>
   );
