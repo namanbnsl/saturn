@@ -14,7 +14,7 @@ const NewProjectPage = async () => {
           </div>
         </div>
 
-        <ProjectCreationForm userId={session?.user.id as string} />
+        <ProjectCreationForm email={session?.user.email as string} />
       </main>
     </>
   );

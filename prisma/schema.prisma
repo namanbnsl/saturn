@@ -47,7 +47,7 @@ model Session {
 
 model User {
   id            String    @id @default(cuid())
-  name          String?   @unique
+  name          String?
   email         String?   @unique
   emailVerified DateTime?
   image         String?
@@ -78,8 +78,8 @@ model Project {
   name     String
   priority ProjectPriority @default(MEDIUM)
 
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
+  user      User   @relation(fields: [userEmail], references: [email])
+  userEmail String
 
   @@map("project")
 }

@@ -10,6 +10,7 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form';
+import { Icons } from '@/components/ui/icons';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -18,8 +19,13 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import { toast } from '@/components/ui/use-toast';
+import { errorCodes } from '@/lib/errorCodes';
 import { zodResolver } from '@hookform/resolvers/zod';
+import axios from 'axios';
 import { PlusCircleIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -29,10 +35,10 @@ const creationFormSchema = z.object({
 });
 
 type Props = {
-  userId: string;
+  email: string;
 };
 
-const ProjectCreationForm = ({ userId }: Props) => {
+const ProjectCreationForm = ({ email }: Props) => {
   const form = useForm<z.infer<typeof creationFormSchema>>({
     resolver: zodResolver(creationFormSchema),
     defaultValues: {
@@ -41,8 +47,44 @@ const ProjectCreationForm = ({ userId }: Props) => {
     }
   });
 
-  const onSubmit = (values: z.infer<typeof creationFormSchema>) => {
-    console.log(values);
+  const router = useRouter();
+
+  const [creationLoading, setCreationLoading] = useState<boolean>(false);
+
+  const onSubmit = async (values: z.infer<typeof creationFormSchema>) => {
+    try {
+      setCreationLoading(true);
+
+      const body = {
+        email,
+        ...values
+      };
+
+      const res = await axios.post('/api/projects/new', body);
+
+      if (res.data.msg === 'success') {
+        router.push('/dashboard');
+
+        return toast({
+          title: 'Project created.',
+          description: 'Your project has been created. 🪐'
+        });
+      }
+    } catch (err) {
+      const error = err as { response: { data: { msg: string } } };
+
+      if (error.response.data) {
+        if (error.response.data.msg.toString() === errorCodes.projectExists) {
+          return toast({
+            title: 'Project already exists.',
+            description: 'Please change the project name and try again.',
+            variant: 'destructive'
+          });
+        }
+      }
+    } finally {
+      setCreationLoading(false);
+    }
   };
 
   return (
@@ -119,8 +161,12 @@ const ProjectCreationForm = ({ userId }: Props) => {
               </FormItem>
             )}
           />
-          <Button className="w-1/3" type="submit">
-            Create <PlusCircleIcon className="ml-2 w-4 h-4" />
+          <Button disabled={creationLoading} className="w-1/3" type="submit">
+            {creationLoading && (
+              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+            )}
+            <PlusCircleIcon className="mr-2 w-4 h-4" />
+            Create
           </Button>
         </form>
       </Form>

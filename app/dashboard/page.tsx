@@ -9,12 +9,13 @@ const DashboardPage = () => {
         <div className="mt-4 flex flex-col place-content-between place-items-start space-y-3 sm:flex-row sm:space-y-0">
           <div>
             <h1 className="text-2xl font-semibold">Dashboard</h1>
-            <p className="text-muted-foreground">Manage your stuff here.</p>
+            <p className="text-muted-foreground">Manage your projects here.</p>
           </div>
 
           <Link href={'/dashboard/projects/new'}>
             <Button>
-              Create Project <PlusCircleIcon className="ml-2 w-4 h-4" />
+              <PlusCircleIcon className="mr-2 w-4 h-4" />
+              Create Project
             </Button>
           </Link>
         </div>

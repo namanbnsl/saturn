@@ -24,7 +24,7 @@ export type Project = {
   id: string;
   name: string;
   priority: Generated<ProjectPriority>;
-  userId: string;
+  userEmail: string;
 };
 export type Session = {
   id: string;
