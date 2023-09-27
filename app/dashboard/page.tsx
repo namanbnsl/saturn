@@ -1,3 +1,4 @@
+import DashboardNavbar from '@/components/nav/navbar/Navbar';
 import {
   Project,
   ProjectsDataTable
@@ -14,7 +15,7 @@ const DashboardPage = async () => {
   async function getData(): Promise<Project[]> {
     const data = await db
       .selectFrom('project')
-      .select(['name', 'priority'])
+      .select(['name', 'priority', 'id'])
       .selectAll()
       .where('userEmail', '=', session?.user.email as string)
       .execute();
@@ -26,6 +27,8 @@ const DashboardPage = async () => {
 
   return (
     <>
+      <DashboardNavbar />
+
       <main className="container space-y-10 mt-20">
         <div className="mt-4 flex flex-col place-content-between place-items-start space-y-3 sm:flex-row sm:space-y-0">
           <div>

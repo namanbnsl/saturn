@@ -16,12 +16,14 @@ import {
   getCoreRowModel,
   useReactTable
 } from '@tanstack/react-table';
+import { useRouter } from 'next/navigation';
 
 interface DataTableProps<TData> {
   data: TData[];
 }
 
 export type Project = {
+  id: string;
   name: string;
   priority: ProjectPriority;
 };
@@ -39,17 +41,17 @@ export function ProjectsDataTable<TData>({ data }: DataTableProps<TData>) {
         return (
           <div>
             {row.getValue('priority') === 'LOW' ? (
-              <div className="flex items-center gap-x-1">
+              <div className="flex items-center gap-x-2">
                 <div className="w-4 h-4 bg-green-400 rounded-full" />
                 <div>Low</div>
               </div>
             ) : row.getValue('priority') === 'MEDIUM' ? (
-              <div className="flex items-center gap-x-1">
+              <div className="flex items-center gap-x-2">
                 <div className="w-4 h-4 bg-yellow-400 rounded-full" />
                 <div>Medium</div>
               </div>
             ) : (
-              <div className="flex items-center gap-x-1">
+              <div className="flex items-center gap-x-2">
                 <div className="w-4 h-4 bg-red-400 rounded-full" />
                 <div>High</div>
               </div>
@@ -68,6 +70,8 @@ export function ProjectsDataTable<TData>({ data }: DataTableProps<TData>) {
     columns,
     getCoreRowModel: getCoreRowModel()
   });
+
+  const router = useRouter();
 
   return (
     <div className="rounded-md border">
@@ -94,6 +98,12 @@ export function ProjectsDataTable<TData>({ data }: DataTableProps<TData>) {
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
+                className="cursor-pointer"
+                onClick={() =>
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
+                  router.push(`/dashboard/projects/${row?.original?.id}`)
+                }
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
               >
