@@ -10,6 +10,7 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form';
+import { Icons } from '@/components/ui/icons';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -18,8 +19,12 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import { toast } from '@/components/ui/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
+import axios from 'axios';
 import { SendHorizontal } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
 
@@ -45,8 +50,38 @@ const ProjectUpdateForm = ({ project }: Props) => {
     }
   });
 
-  const onSubmit = (values: z.infer<typeof updatingFormSchema>) => {
-    console.log(values);
+  const [updateLoading, setUpdateLoading] = useState<boolean>(false);
+  const router = useRouter();
+
+  const onSubmit = async (values: z.infer<typeof updatingFormSchema>) => {
+    try {
+      setUpdateLoading(true);
+
+      const body = {
+        id: project.id,
+        ...values
+      };
+
+      const res = await axios.patch('/api/projects/update', body);
+
+      if (res.data.msg === 'success') {
+        router.push(`/dashboard/projects/${project.id}`);
+        router.refresh();
+
+        return toast({
+          title: 'Project updated.',
+          description: 'Your project has been updated. 🪐'
+        });
+      }
+    } catch (err) {
+      return toast({
+        title: 'Something went wrong.',
+        description: 'Please try again later or contact us.',
+        variant: 'destructive'
+      });
+    } finally {
+      setUpdateLoading(false);
+    }
   };
 
   return (
@@ -127,8 +162,10 @@ const ProjectUpdateForm = ({ project }: Props) => {
           )}
         />
 
-        <Button className="w-1/2" type="submit">
-          {' '}
+        <Button disabled={updateLoading} className="w-1/2" type="submit">
+          {updateLoading && (
+            <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+          )}
           <SendHorizontal className="mr-2 w-4 h-4" />
           Update
         </Button>

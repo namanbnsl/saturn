@@ -23,17 +23,19 @@ export async function POST(req: Request) {
   if (checkProjectName.length > 0) {
     return NextResponse.json({ msg: 'prjct exists' }, { status: 500 });
   } else {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+    const id = nanoid();
+
+    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
     const result = await db
       .insertInto('project')
       .values({
-        id: nanoid(),
+        id,
         name: body.name,
         userEmail: body.email,
         priority: body.priority
       })
       .execute();
-  }
 
-  return NextResponse.json({ msg: 'success' });
+    return NextResponse.json({ msg: 'success', id });
+  }
 }

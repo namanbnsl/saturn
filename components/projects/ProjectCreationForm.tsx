@@ -63,7 +63,7 @@ const ProjectCreationForm = ({ email }: Props) => {
       const res = await axios.post('/api/projects/new', body);
 
       if (res.data.msg === 'success') {
-        router.push('/dashboard');
+        router.push(`/dashboard/projects/${res.data.id}`);
         router.refresh();
 
         return toast({
