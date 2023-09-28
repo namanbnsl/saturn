@@ -10,14 +10,16 @@ type SidebarItem = {
   label: string;
   href: string;
   icon: LucideIcon;
+  disabled?: boolean;
 };
 
 type Props = {
   projectId: string;
   projectName: string;
+  canShare: boolean;
 };
 
-const Sidebar = ({ projectId, projectName }: Props) => {
+const Sidebar = ({ projectId, projectName, canShare }: Props) => {
   const items: SidebarItem[] = [
     {
       label: 'Project Details',
@@ -27,7 +29,8 @@ const Sidebar = ({ projectId, projectName }: Props) => {
     {
       label: 'Share',
       href: `/dashboard/projects/${projectId}/share`,
-      icon: Forward
+      icon: Forward,
+      disabled: !canShare
     }
   ];
 
@@ -50,6 +53,7 @@ const Sidebar = ({ projectId, projectName }: Props) => {
         <span className="text-muted-foreground">Actions: </span>
         {items.map((item) => (
           <Button
+            disabled={item.disabled}
             onClick={() => {
               router.push(item.href);
             }}

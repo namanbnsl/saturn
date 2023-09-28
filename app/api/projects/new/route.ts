@@ -22,18 +22,17 @@ export async function POST(req: Request) {
   } else {
     const id = nanoid();
 
-    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-    const result = await db
+    await db
       .insertInto('project')
       .values({
         id,
         name: body.name,
-        priority: body.priority
+        priority: body.priority,
+        adminEmail: body.email
       })
       .execute();
 
-    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-    const result2 = await db
+    await db
       .insertInto('membersInProject')
       .values({
         memberEmail: body.email,

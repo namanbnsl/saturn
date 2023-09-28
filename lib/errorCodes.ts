@@ -1,3 +1,4 @@
 export const errorCodes = {
-  projectExists: 'prjct exists'
+  projectExists: 'prjct exists',
+  projectInviteExists: 'duplicate project invite'
 };

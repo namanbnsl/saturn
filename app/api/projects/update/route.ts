@@ -8,8 +8,7 @@ export async function PATCH(req: Request) {
     priority: 'LOW' | 'HIGH' | 'MEDIUM';
   } = await req.json();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-  const result = await db
+  await db
     .updateTable('project')
     .set({ name: body.name, priority: body.priority })
     .where('id', '=', body.id)

@@ -54,6 +54,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   projects      MembersInProject[]
+  projectInvite ProjectInvite[]
 
   @@map("user")
 }
@@ -78,7 +79,10 @@ model Project {
   name     String
   priority ProjectPriority @default(MEDIUM)
 
-  members MembersInProject[]
+  adminEmail String
+
+  members        MembersInProject[]
+  projectInvites ProjectInvite[]
 
   @@map("project")
 }
@@ -92,4 +96,15 @@ model MembersInProject {
 
   @@id([projectId, memberEmail])
   @@map("membersInProject")
+}
+
+model ProjectInvite {
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId String
+
+  fromUser  User   @relation(fields: [fromEmail], references: [email])
+  fromEmail String
+
+  @@id([projectId, fromEmail])
+  @@map("projectInvite")
 }

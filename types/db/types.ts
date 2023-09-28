@@ -28,6 +28,11 @@ export type Project = {
   id: string;
   name: string;
   priority: Generated<ProjectPriority>;
+  adminEmail: string;
+};
+export type ProjectInvite = {
+  projectId: string;
+  fromEmail: string;
 };
 export type Session = {
   id: string;
@@ -51,6 +56,7 @@ export type DB = {
   account: Account;
   membersInProject: MembersInProject;
   project: Project;
+  projectInvite: ProjectInvite;
   session: Session;
   user: User;
   verificationToken: VerificationToken;
