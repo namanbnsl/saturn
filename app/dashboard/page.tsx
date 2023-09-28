@@ -13,14 +13,14 @@ const DashboardPage = async () => {
   const session = await getSession();
 
   async function getData(): Promise<Project[]> {
-    const data = await db
-      .selectFrom('project')
-      .select(['name', 'priority', 'id'])
-      .selectAll()
-      .where('userEmail', '=', session?.user.email as string)
+    const projectsWhereMember = await db
+      .selectFrom('project as p')
+      .select(['p.id', 'p.name', 'p.priority'])
+      .innerJoin('membersInProject as m', 'p.id', 'm.projectId')
+      .where('m.memberEmail', '=', session?.user.email as string)
       .execute();
 
-    return data;
+    return projectsWhereMember;
   }
 
   const data = await getData();

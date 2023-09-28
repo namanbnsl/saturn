@@ -9,18 +9,15 @@ export async function POST(req: Request) {
     priority: 'LOW' | 'HIGH' | 'MEDIUM';
   } = await req.json();
 
-  const checkProjectName = await db
-    .selectFrom('project')
-    .selectAll()
-    .where((project) =>
-      project.and({
-        name: body.name,
-        userEmail: body.email
-      })
-    )
+  const projectQuery = await db
+    .selectFrom('project as p')
+    .select('p.id')
+    .innerJoin('membersInProject as m', 'p.id', 'm.projectId')
+    .where((p) => p.and({ name: body.name, memberEmail: body.email }))
+    .limit(1)
     .execute();
 
-  if (checkProjectName.length > 0) {
+  if (projectQuery.length > 0) {
     return NextResponse.json({ msg: 'prjct exists' }, { status: 500 });
   } else {
     const id = nanoid();
@@ -31,8 +28,16 @@ export async function POST(req: Request) {
       .values({
         id,
         name: body.name,
-        userEmail: body.email,
         priority: body.priority
+      })
+      .execute();
+
+    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+    const result2 = await db
+      .insertInto('membersInProject')
+      .values({
+        memberEmail: body.email,
+        projectId: id
       })
       .execute();
 

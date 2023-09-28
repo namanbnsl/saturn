@@ -20,11 +20,14 @@ export type Account = {
   id_token: string | null;
   session_state: string | null;
 };
+export type MembersInProject = {
+  projectId: string;
+  memberEmail: string;
+};
 export type Project = {
   id: string;
   name: string;
   priority: Generated<ProjectPriority>;
-  userEmail: string;
 };
 export type Session = {
   id: string;
@@ -46,6 +49,7 @@ export type VerificationToken = {
 };
 export type DB = {
   account: Account;
+  membersInProject: MembersInProject;
   project: Project;
   session: Session;
   user: User;
