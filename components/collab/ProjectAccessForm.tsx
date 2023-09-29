@@ -1,9 +1,12 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { Icons } from '@/components/ui/icons';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { toast } from '@/components/ui/use-toast';
 import { shortenEmail } from '@/lib/utils';
+import axios from 'axios';
 import { CheckIcon, Copy, VenetianMask } from 'lucide-react';
 import { useState } from 'react';
 
@@ -32,9 +35,42 @@ const ProjectAccessForm = ({ hostUrl, permissions }: Props) => {
     }, 2000);
   };
 
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const acceptPermission = async ({
+    projectId,
+    fromEmail
+  }: {
+    projectId: string;
+    fromEmail: string;
+  }) => {
+    try {
+      setLoading(true);
+
+      const res = await axios.post('/api/collab/permission', {
+        projectId,
+        fromEmail
+      });
+
+      if (res.data.msg === 'success') {
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      }
+    } catch (err) {
+      return toast({
+        title: 'Something went wrong.',
+        description: 'Something went wrong. Please try again.',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="mt-4 w-[60%]">
-      <Tabs defaultValue="access">
+      <Tabs defaultValue="permissions">
         <TabsList>
           <TabsTrigger value="permissions">Permissions</TabsTrigger>
           <TabsTrigger value="access">Access</TabsTrigger>
@@ -50,19 +86,37 @@ const ProjectAccessForm = ({ hostUrl, permissions }: Props) => {
             </div>
 
             <div className="mt-4 flex flex-col w-1/2">
-              {permissions.map((permission) => (
-                <div
-                  key={shortenEmail(permission.fromEmail)}
-                  className="px-4 py-2 mb-1.5 rounded-md border flex justify-between items-center"
-                >
-                  {shortenEmail(permission.fromEmail)}
+              {permissions.length > 0 ? (
+                permissions.map((permission) => (
+                  <div
+                    key={shortenEmail(permission.fromEmail)}
+                    className="px-4 py-2 mb-1.5 rounded-md border flex justify-between items-center"
+                  >
+                    {shortenEmail(permission.fromEmail)}
 
-                  <Button variant={'outline'} className="h-9.5 w-1/3">
-                    <VenetianMask className="mr-2 w-4 h-4" />
-                    Allow
-                  </Button>
+                    <Button
+                      onClick={() => {
+                        acceptPermission({
+                          fromEmail: permission.fromEmail,
+                          projectId: permission.projectId
+                        });
+                      }}
+                      variant={'outline'}
+                      className="h-9.5 w-1/3"
+                    >
+                      {loading && (
+                        <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                      )}
+                      <VenetianMask className="mr-2 w-4 h-4" />
+                      Allow
+                    </Button>
+                  </div>
+                ))
+              ) : (
+                <div className="text-sm text-center mt-3">
+                  No user has asked permission to join.
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </TabsContent>

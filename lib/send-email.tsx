@@ -23,6 +23,7 @@ export const sendEmail = async ({
     );
     return Promise.resolve();
   }
+
   return resend.emails.send({
     from: 'onboarding@resend.dev',
     to: test ? 'delivered@resend.dev' : email,

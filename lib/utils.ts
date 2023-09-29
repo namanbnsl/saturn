@@ -11,11 +11,11 @@ export const nanoid = customAlphabet(
   7
 );
 
-export const shortenEmail = (email) => {
+export const shortenEmail = (email: string) => {
   const atIndex = email.indexOf('@');
   if (atIndex !== -1) {
     const name = email.slice(0, atIndex);
-    return name + '...';
+    return name + '@' + '...';
   }
 
   return email;

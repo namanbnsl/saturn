@@ -12,22 +12,25 @@ import {
 import * as React from 'react';
 
 type Props = {
-  validationLink: string;
+  projectName: string;
+  url: string;
 };
 
-export const AuthEmail = ({ validationLink }: Props) => (
+export const JoinedProjectEmail = ({ projectName, url }: Props) => (
   <Html>
-    <Preview>Your login link for saturn</Preview>
+    <Preview>You have been allowed to join {projectName}</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={heading}>Your login link for saturn</Heading>
+        <Heading style={heading}>
+          You have been allowed to join {projectName}
+        </Heading>
         <Section style={buttonContainer}>
-          <Button pY={11} pX={23} style={button} href={validationLink}>
-            Login to saturn
+          <Button pY={11} pX={23} style={button} href={url}>
+            View Project
           </Button>
         </Section>
         <Hr style={hr} />
-        <Link href="http://localhost:3000" style={reportLink}>
+        <Link href={url} style={reportLink}>
           saturn
         </Link>
       </Container>
@@ -35,7 +38,7 @@ export const AuthEmail = ({ validationLink }: Props) => (
   </Html>
 );
 
-export default AuthEmail;
+export default JoinedProjectEmail;
 
 const main = {
   backgroundColor: '#ffffff',

@@ -50,7 +50,7 @@ const AskPermissionButton = ({ email, projectId }: Props) => {
 
   return (
     <div>
-      <Button onClick={onSubmit} className="w-1/2" disabled={loading}>
+      <Button onClick={onSubmit} className="w-[70%] h-10" disabled={loading}>
         {loading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
         <VenetianMask className="mr-2 w-4 h-4" />
         Ask permission
