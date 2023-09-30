@@ -40,10 +40,10 @@ const ProjectLayout = async ({ params, children }: Props) => {
     redirect('/dashboard');
   }
 
-  let canShare = true;
+  let isAdmin = true;
 
   if (project[0].adminEmail !== session?.user.email) {
-    canShare = false;
+    isAdmin = false;
   }
 
   return (
@@ -52,7 +52,7 @@ const ProjectLayout = async ({ params, children }: Props) => {
         <></>
       ) : (
         <Sidebar
-          canShare={canShare}
+          isAdmin={isAdmin}
           projectId={project[0].id}
           projectName={project[0].name}
         />

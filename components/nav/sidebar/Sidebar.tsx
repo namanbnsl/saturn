@@ -2,8 +2,8 @@
 
 import BackToDashboard from '@/components/ui/back-to-dashboard';
 import { Button } from '@/components/ui/button';
-import { Forward, LucideIcon, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Forward, LucideIcon, Settings } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 
 type SidebarItem = {
@@ -16,21 +16,22 @@ type SidebarItem = {
 type Props = {
   projectId: string;
   projectName: string;
-  canShare: boolean;
+  isAdmin: boolean;
 };
 
-const Sidebar = ({ projectId, projectName, canShare }: Props) => {
+const Sidebar = ({ projectId, projectName, isAdmin }: Props) => {
   const items: SidebarItem[] = [
     {
       label: 'Project Details',
       href: `/dashboard/projects/${projectId}/details`,
-      icon: Settings
+      icon: Settings,
+      disabled: !isAdmin
     },
     {
       label: 'Share',
       href: `/dashboard/projects/${projectId}/share`,
       icon: Forward,
-      disabled: !canShare
+      disabled: !isAdmin
     }
   ];
 
@@ -53,16 +54,16 @@ const Sidebar = ({ projectId, projectName, canShare }: Props) => {
         <span className="text-muted-foreground">Actions: </span>
         {items.map((item) => (
           <Button
+            key={item.href}
             disabled={item.disabled}
             onClick={() => {
               router.push(item.href);
             }}
+            variant={'outline'}
             className={cn(
               'rounded-xl flex items-center justify-center gap-x-2',
               pathname === item.href ? 'bg-accent text-red-200' : ''
             )}
-            variant={'outline'}
-            key={item.href}
           >
             <item.icon className="w-5 h-5" />
             {item.label}

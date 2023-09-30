@@ -6,13 +6,33 @@ export async function PATCH(req: Request) {
     id: string;
     name: string;
     priority: 'LOW' | 'HIGH' | 'MEDIUM';
+    adminEmail: string;
   } = await req.json();
 
-  await db
-    .updateTable('project')
-    .set({ name: body.name, priority: body.priority })
-    .where('id', '=', body.id)
+  const result = await db
+    .selectFrom('membersInProject')
+    .selectAll()
+    .where((mp) =>
+      mp.and({
+        memberEmail: body.adminEmail,
+        projectId: body.id
+      })
+    )
     .execute();
 
-  return NextResponse.json({ msg: 'success' });
+  if (result.length > 0) {
+    await db
+      .updateTable('project')
+      .set({
+        name: body.name,
+        priority: body.priority,
+        adminEmail: body.adminEmail
+      })
+      .where('id', '=', body.id)
+      .execute();
+
+    return NextResponse.json({ msg: 'success' });
+  } else {
+    return NextResponse.json({ msg: 'usr not in prjct' }, { status: 200 });
+  }
 }

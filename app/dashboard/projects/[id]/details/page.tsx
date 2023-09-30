@@ -1,16 +1,24 @@
 import ProjectUpdateForm from '@/components/projects/ProjectUpdateForm';
+import { getSession } from '@/lib/auth';
 import { db } from '@/lib/db';
+import { redirect } from 'next/navigation';
 
 type Props = {
   params: { id: string };
 };
 
 const ProjectDetailPage = async ({ params }: Props) => {
+  const session = await getSession();
+
   const project = await db
     .selectFrom('project')
-    .select(['id', 'name', 'priority'])
+    .select(['id', 'name', 'priority', 'adminEmail'])
     .where('id', '=', params.id)
     .execute();
+
+  if (project[0].adminEmail !== session?.user.email) {
+    return redirect(`/dashboard/projects/${params.id}`);
+  }
 
   return (
     <main className="ml-14 mt-20">

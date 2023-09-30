@@ -20,6 +20,7 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { toast } from '@/components/ui/use-toast';
+import { errorCodes } from '@/lib/errorCodes';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import { SendHorizontal } from 'lucide-react';
@@ -30,13 +31,15 @@ import z from 'zod';
 
 const updatingFormSchema = z.object({
   name: z.string().min(3, { message: 'Name should be at least 3 characters.' }),
-  priority: z.string({ required_error: 'Please select a priority.' })
+  priority: z.string({ required_error: 'Please select a priority.' }),
+  adminEmail: z.string().email().min(3)
 });
 
 type Props = {
   project: {
     id: string;
     name: string;
+    adminEmail: string;
     priority: 'LOW' | 'MEDIUM' | 'HIGH';
   };
 };
@@ -46,7 +49,8 @@ const ProjectUpdateForm = ({ project }: Props) => {
     resolver: zodResolver(updatingFormSchema),
     defaultValues: {
       name: project.name,
-      priority: project.priority
+      priority: project.priority,
+      adminEmail: project.adminEmail
     }
   });
 
@@ -72,6 +76,12 @@ const ProjectUpdateForm = ({ project }: Props) => {
           title: 'Project updated.',
           description: 'Your project has been updated. 🪐'
         });
+      } else if (res.data.msg === errorCodes.adminUserDoesntExist) {
+        return toast({
+          title: "User doesn't exists.",
+          description: 'This user is not a part of this project. 🪐',
+          variant: 'destructive'
+        });
       }
     } catch (err) {
       return toast({
@@ -90,6 +100,30 @@ const ProjectUpdateForm = ({ project }: Props) => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-8 mt-10 w-1/3"
       >
+        <FormField
+          control={form.control}
+          name="adminEmail"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Admin Email</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="shadcn"
+                  autoCapitalize="off"
+                  autoComplete="off"
+                  autoCorrect="off"
+                  className="focus:border-gray-200 border-[2.5px] transition-all duration-200"
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription>
+                Change your project&apos;s admin from here.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name="name"
