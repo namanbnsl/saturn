@@ -2,6 +2,13 @@
 
 import { Button } from '@/components/ui/button';
 import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem
+} from '@/components/ui/command';
+import {
   Form,
   FormControl,
   FormDescription,
@@ -13,6 +20,11 @@ import {
 import { Icons } from '@/components/ui/icons';
 import { Input } from '@/components/ui/input';
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from '@/components/ui/popover';
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -21,9 +33,10 @@ import {
 } from '@/components/ui/select';
 import { toast } from '@/components/ui/use-toast';
 import { errorCodes } from '@/lib/errorCodes';
+import { cn, shortenEmail } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
-import { SendHorizontal } from 'lucide-react';
+import { Check, ChevronsUpDown, SendHorizontal } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -42,9 +55,12 @@ type Props = {
     adminEmail: string;
     priority: 'LOW' | 'MEDIUM' | 'HIGH';
   };
+  users: {
+    email: string;
+  }[];
 };
 
-const ProjectUpdateForm = ({ project }: Props) => {
+const ProjectUpdateForm = ({ project, users }: Props) => {
   const form = useForm<z.infer<typeof updatingFormSchema>>({
     resolver: zodResolver(updatingFormSchema),
     defaultValues: {
@@ -104,18 +120,57 @@ const ProjectUpdateForm = ({ project }: Props) => {
           control={form.control}
           name="adminEmail"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Admin Email</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="shadcn"
-                  autoCapitalize="off"
-                  autoComplete="off"
-                  autoCorrect="off"
-                  className="focus:border-gray-200 border-[2.5px] transition-all duration-200"
-                  {...field}
-                />
-              </FormControl>
+            <FormItem className="flex flex-col">
+              <FormLabel>Admin</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      className={cn(
+                        'w-[200px] justify-between',
+                        !field.value && 'text-muted-foreground'
+                      )}
+                    >
+                      {field.value
+                        ? shortenEmail(
+                            users.find((user) => user.email === field.value)
+                              ?.email as string
+                          )
+                        : 'Select user'}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-[200px] p-0">
+                  <Command>
+                    <CommandInput placeholder="Search users..." />
+                    <CommandEmpty>No user found.</CommandEmpty>
+                    <CommandGroup>
+                      {users.map((user) => (
+                        <CommandItem
+                          value={user.email as string}
+                          key={user.email}
+                          onSelect={() => {
+                            form.setValue('adminEmail', user.email as string);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              'mr-2 h-4 w-4',
+                              user.email === field.value
+                                ? 'opacity-100'
+                                : 'opacity-0'
+                            )}
+                          />
+                          {shortenEmail(user.email)}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </Command>
+                </PopoverContent>
+              </Popover>
               <FormDescription>
                 Change your project&apos;s admin from here.
               </FormDescription>

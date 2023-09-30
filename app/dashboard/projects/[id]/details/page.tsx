@@ -16,6 +16,12 @@ const ProjectDetailPage = async ({ params }: Props) => {
     .where('id', '=', params.id)
     .execute();
 
+  const users = await db
+    .selectFrom('membersInProject')
+    .select(['membersInProject.memberEmail as email'])
+    .where('projectId', '=', params.id)
+    .execute();
+
   if (project[0].adminEmail !== session?.user.email) {
     return redirect(`/dashboard/projects/${params.id}`);
   }
@@ -31,7 +37,7 @@ const ProjectDetailPage = async ({ params }: Props) => {
         </div>
       </div>
 
-      <ProjectUpdateForm project={project[0]} />
+      <ProjectUpdateForm users={users} project={project[0]} />
     </main>
   );
 };

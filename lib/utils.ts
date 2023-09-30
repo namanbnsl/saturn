@@ -11,7 +11,7 @@ export const nanoid = customAlphabet(
   7
 );
 
-export const shortenEmail = (email: string) => {
+export const shortenEmail = (email: string): string => {
   const atIndex = email.indexOf('@');
   if (atIndex !== -1) {
     const name = email.slice(0, atIndex);
